@@ -1,35 +1,40 @@
 import streamlit as st
 import numpy as np
 import joblib
+from tensorflow.keras.models import load_model
 
-# Load Model
-model = joblib.load("model.pkl")   # change file name if needed
+# Load model and scaler
+model = load_model("final_model.h5")
+scaler = joblib.load("scaler.joblib")
 
-st.title("🔬 Breast Cancer Classification")
-st.write("Enter the features to predict whether the tumor is Benign or Malignant.")
+st.title("Breast Cancer Classification App")
+st.write("Enter the 30 feature values from the dataset to classify the tumor.")
 
-# Input fields (30 features)
-feature_inputs = []
+# Input fields for 30 features
 feature_names = [
-    "mean radius", "mean texture", "mean perimeter", "mean area", "mean smoothness",
-    "mean compactness", "mean concavity", "mean concave points", "mean symmetry",
-    "mean fractal dimension", "radius error", "texture error", "perimeter error",
-    "area error", "smoothness error", "compactness error", "concavity error",
-    "concave points error", "symmetry error", "fractal dimension error",
-    "worst radius", "worst texture", "worst perimeter", "worst area",
-    "worst smoothness", "worst compactness", "worst concavity",
-    "worst concave points", "worst symmetry", "worst fractal dimension"
+    'mean_radius', 'mean_texture', 'mean_perimeter', 'mean_area', 'mean_smoothness',
+    'mean_compactness', 'mean_concavity', 'mean_concave_points', 'mean_symmetry', 'mean_fractal_dimension',
+    'radius_error', 'texture_error', 'perimeter_error', 'area_error', 'smoothness_error',
+    'compactness_error', 'concavity_error', 'concave_points_error', 'symmetry_error', 'fractal_dimension_error',
+    'worst_radius', 'worst_texture', 'worst_perimeter', 'worst_area', 'worst_smoothness',
+    'worst_compactness', 'worst_concavity', 'worst_concave_points', 'worst_symmetry', 'worst_fractal_dimension'
 ]
 
+inputs = []
+
 for name in feature_names:
-    value = st.number_input(name, format="%.4f")
-    feature_inputs.append(value)
+    value = st.number_input(f"{name.replace('_',' ').title()}", value=0.0)
+    inputs.append(value)
 
 if st.button("Predict"):
-    input_data = np.array(feature_inputs).reshape(1, -1)
-    prediction = model.predict(input_data)[0]
+    X = np.array([inputs])
+    X_scaled = scaler.transform(X)
+    prediction = model.predict(X_scaled)[0][0]
 
-    if prediction == 0:
-        st.success("✔ The tumor is **Malignant**.")
+    st.write("### 🔍 Prediction Result")
+
+    if prediction > 0.5:
+        st.success("🟢 **Benign Tumor**")
     else:
-        st.success("✔ The tumor is **Benign**.")
+        st.error("🔴 **Malignant Tumor**")
+
