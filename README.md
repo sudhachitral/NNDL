@@ -12,11 +12,16 @@ The main goal of this project is to demonstrate how a Neural Network can be used
 - **Model persistence:** Saves trained model (`final_model.h5`) and scaler (`scaler.joblib`) for future predictions
 - **Handles class imbalance** using class weights
 
-## Dataset
-- **Source:** Built-in scikit-learn dataset (`load_breast_cancer`)
-- **Samples:** 569
-- **Features:** 30 numeric features
-- **Target:** 0 = benign, 1 = malignant
+Dataset
+Source: UCI Machine Learning Repository
+https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+Also available via: Built-in sklearn.datasets.load_breast_cancer()
+Samples: 569
+Features: 30 numeric features
+Target Classes:
+0 = Malignant
+1 = Benign
+  
 
 ## Requirements
 - Python 3.x  
